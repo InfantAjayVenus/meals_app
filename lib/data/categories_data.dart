@@ -3,7 +3,7 @@ import 'package:meals_app/models/category.dart';
 
 List<Category> availableCategories = [
   Category(
-    title: 'Italia',
+    title: 'Italian',
     color: Colors.purple,
   ),
   Category(
