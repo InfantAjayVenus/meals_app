@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:meals_app/data/meals_data.dart';
-import 'package:meals_app/models/category.dart';
 import 'package:meals_app/models/meal.dart';
 import 'package:meals_app/screens/meal_info.dart';
 import 'package:meals_app/widgets/meal_item.dart';
 
 class MealsScreen extends StatelessWidget {
-  const MealsScreen(this.activeCategory, {Key? key}) : super(key: key);
+  const MealsScreen(this.mealsForCategory, this.categoryTitle, {Key? key})
+      : super(key: key);
 
-  final Category activeCategory;
+  final List<Meal> mealsForCategory;
+  final String categoryTitle;
 
   _onSelectMeal(BuildContext context, Meal meal) {
     Navigator.of(context).push(
@@ -48,12 +48,6 @@ class MealsScreen extends StatelessWidget {
       ),
     );
 
-    final mealsForCategory = availableMeals
-        .where(
-          (meal) => meal.categories.contains(activeCategory.id),
-        )
-        .toList();
-
     if (mealsForCategory.isNotEmpty) {
       content = Container(
         padding: const EdgeInsets.only(
@@ -73,7 +67,7 @@ class MealsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(activeCategory.title),
+        title: Text(categoryTitle),
       ),
       body: content,
     );
