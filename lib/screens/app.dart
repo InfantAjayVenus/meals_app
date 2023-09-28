@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meals_app/data/meals_data.dart';
+import 'package:meals_app/enum/filter_options.dart';
 import 'package:meals_app/models/meal.dart';
 import 'package:meals_app/screens/categories.dart';
 import 'package:meals_app/screens/meals.dart';
@@ -15,6 +16,18 @@ class AppScreen extends StatefulWidget {
 class _AppScreenState extends State<AppScreen> {
   final List<String> favouriteMealIds = [];
   int _activePageIndex = 0;
+  Map<FilterOptions, bool> filterSettings = {
+    FilterOptions.glutenFree: false,
+    FilterOptions.lactoseFree: false,
+    FilterOptions.vegetarian: false,
+    FilterOptions.vegan: false,
+  };
+
+  _updateFilterSettings(Map<FilterOptions, bool> filterSettings) {
+    setState(() {
+      this.filterSettings = filterSettings;
+    });
+  }
 
   _showToastMessage(String message) {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
@@ -40,6 +53,8 @@ class _AppScreenState extends State<AppScreen> {
   @override
   Widget build(BuildContext context) {
     Widget content = CategoriesScreen(
+      filterSettings: filterSettings,
+      updateFilterSettings: _updateFilterSettings,
       toggleFavourite: _toggleFavourite,
     );
     if (_activePageIndex == 1) {

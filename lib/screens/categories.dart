@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meals_app/data/meals_data.dart';
+import 'package:meals_app/enum/filter_options.dart';
 import 'package:meals_app/enum/screen_names.dart';
 import 'package:meals_app/models/category.dart';
 import 'package:meals_app/screens/filters.dart';
@@ -11,19 +12,29 @@ import 'package:meals_app/widgets/side_drawer.dart';
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({
     Key? key,
+    required this.filterSettings,
+    required this.updateFilterSettings,
     required this.toggleFavourite,
   }) : super(key: key);
   final Function toggleFavourite;
+  final Map<FilterOptions, bool> filterSettings;
+  final Function updateFilterSettings;
 
-  _setScreen(BuildContext context, ScreenNames activeScreen) {
+  _setScreen(BuildContext context, ScreenNames activeScreen) async {
     switch (activeScreen) {
       case ScreenNames.meals:
         Navigator.of(context).pop();
       case ScreenNames.filters:
         Navigator.of(context).pop();
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return const FiltersScreen();
+        final updatedFilterSettings = await Navigator.of(context)
+            .push<Map<FilterOptions, bool>>(
+                MaterialPageRoute(builder: (context) {
+          return FiltersScreen(filterSettings);
         }));
+
+        if (updatedFilterSettings != null) {
+          updateFilterSettings(updatedFilterSettings);
+        }
       default:
         Navigator.of(context).pop();
     }
@@ -34,6 +45,15 @@ class CategoriesScreen extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) {
           final mealsList = availableMeals
+              .where((element) =>
+                  !((filterSettings[FilterOptions.glutenFree]! &&
+                          !element.isGlutenFree) ||
+                      (filterSettings[FilterOptions.lactoseFree]! &&
+                          !element.isLactoseFree) ||
+                      (filterSettings[FilterOptions.vegetarian]! &&
+                          !element.isVegetarian) ||
+                      (filterSettings[FilterOptions.vegan]! &&
+                          !element.isVegan)))
               .where(
                 (element) => element.categories.contains(selectedCategory.id),
               )
