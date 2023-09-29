@@ -4,8 +4,7 @@ import 'package:meals_app/data/categories_data.dart';
 import 'package:meals_app/enum/filter_options.dart';
 import 'package:meals_app/enum/screen_names.dart';
 import 'package:meals_app/models/category.dart';
-import 'package:meals_app/providers/filters_provider.dart';
-import 'package:meals_app/providers/meals_provider.dart';
+import 'package:meals_app/providers/filtered_meals_provider.dart';
 import 'package:meals_app/screens/filters.dart';
 import 'package:meals_app/screens/meals.dart';
 import 'package:meals_app/widgets/category_item.dart';
@@ -36,18 +35,8 @@ class CategoriesScreen extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          final availableMeals = ref.watch(mealsProvider);
-          final filterSettings = ref.watch(filtersProvider);
-          final mealsList = availableMeals
-              .where((element) =>
-                  !((filterSettings[FilterOptions.glutenFree]! &&
-                          !element.isGlutenFree) ||
-                      (filterSettings[FilterOptions.lactoseFree]! &&
-                          !element.isLactoseFree) ||
-                      (filterSettings[FilterOptions.vegetarian]! &&
-                          !element.isVegetarian) ||
-                      (filterSettings[FilterOptions.vegan]! &&
-                          !element.isVegan)))
+          final mealsList = ref
+              .watch(filteredMealsProvider)
               .where(
                 (element) => element.categories.contains(selectedCategory.id),
               )
