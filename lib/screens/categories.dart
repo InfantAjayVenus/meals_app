@@ -4,6 +4,7 @@ import 'package:meals_app/data/categories_data.dart';
 import 'package:meals_app/enum/filter_options.dart';
 import 'package:meals_app/enum/screen_names.dart';
 import 'package:meals_app/models/category.dart';
+import 'package:meals_app/providers/filters_provider.dart';
 import 'package:meals_app/providers/meals_provider.dart';
 import 'package:meals_app/screens/filters.dart';
 import 'package:meals_app/screens/meals.dart';
@@ -13,11 +14,7 @@ import 'package:meals_app/widgets/side_drawer.dart';
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({
     Key? key,
-    required this.filterSettings,
-    required this.updateFilterSettings,
   }) : super(key: key);
-  final Map<FilterOptions, bool> filterSettings;
-  final Function updateFilterSettings;
 
   _setScreen(BuildContext context, ScreenNames activeScreen) async {
     switch (activeScreen) {
@@ -25,15 +22,10 @@ class CategoriesScreen extends StatelessWidget {
         Navigator.of(context).pop();
       case ScreenNames.filters:
         Navigator.of(context).pop();
-        final updatedFilterSettings = await Navigator.of(context)
-            .push<Map<FilterOptions, bool>>(
-                MaterialPageRoute(builder: (context) {
-          return FiltersScreen(filterSettings);
+        await Navigator.of(context).push<Map<FilterOptions, bool>>(
+            MaterialPageRoute(builder: (context) {
+          return const FiltersScreen();
         }));
-
-        if (updatedFilterSettings != null) {
-          updateFilterSettings(updatedFilterSettings);
-        }
       default:
         Navigator.of(context).pop();
     }
@@ -45,6 +37,7 @@ class CategoriesScreen extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) {
           final availableMeals = ref.watch(mealsProvider);
+          final filterSettings = ref.watch(filtersProvider);
           final mealsList = availableMeals
               .where((element) =>
                   !((filterSettings[FilterOptions.glutenFree]! &&

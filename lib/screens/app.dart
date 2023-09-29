@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:meals_app/enum/filter_options.dart';
 import 'package:meals_app/models/meal.dart';
 import 'package:meals_app/providers/favourite_meals_provider.dart';
 import 'package:meals_app/providers/meals_provider.dart';
@@ -17,25 +16,10 @@ class AppScreen extends ConsumerStatefulWidget {
 
 class _AppScreenState extends ConsumerState<AppScreen> {
   int _activePageIndex = 0;
-  Map<FilterOptions, bool> filterSettings = {
-    FilterOptions.glutenFree: false,
-    FilterOptions.lactoseFree: false,
-    FilterOptions.vegetarian: false,
-    FilterOptions.vegan: false,
-  };
-
-  _updateFilterSettings(Map<FilterOptions, bool> filterSettings) {
-    setState(() {
-      this.filterSettings = filterSettings;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    Widget content = CategoriesScreen(
-      filterSettings: filterSettings,
-      updateFilterSettings: _updateFilterSettings,
-    );
+    Widget content = const CategoriesScreen();
     if (_activePageIndex == 1) {
       final availableMeals = ref.watch(mealsProvider);
       final favouriteMealIds = ref.watch(favouriteMealsProvider);
