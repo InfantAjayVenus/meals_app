@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:meals_app/data/meals_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals_app/enum/filter_options.dart';
 import 'package:meals_app/models/meal.dart';
+import 'package:meals_app/providers/meals_provider.dart';
 import 'package:meals_app/screens/categories.dart';
 import 'package:meals_app/screens/meals.dart';
 
-class AppScreen extends StatefulWidget {
+class AppScreen extends ConsumerStatefulWidget {
   const AppScreen({super.key});
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<ConsumerStatefulWidget> createState() {
     return _AppScreenState();
   }
 }
 
-class _AppScreenState extends State<AppScreen> {
+class _AppScreenState extends ConsumerState<AppScreen> {
   final List<String> favouriteMealIds = [];
   int _activePageIndex = 0;
   Map<FilterOptions, bool> filterSettings = {
@@ -58,6 +59,7 @@ class _AppScreenState extends State<AppScreen> {
       toggleFavourite: _toggleFavourite,
     );
     if (_activePageIndex == 1) {
+      final availableMeals = ref.watch(mealsProvider);
       List<Meal> favouriteMeals = availableMeals
           .where(
             (element) => favouriteMealIds.contains(element.id),

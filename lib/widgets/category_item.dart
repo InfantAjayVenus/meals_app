@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals_app/models/category.dart';
 import 'package:meals_app/utils/get_contrasting_color.dart';
 
-class CategoryItem extends StatelessWidget {
+class CategoryItem extends ConsumerWidget {
   const CategoryItem(
       {super.key, required this.categoryData, required this.onSelectCategory});
   final Category categoryData;
   final Function onSelectCategory;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
-        onSelectCategory(context, categoryData);
+        onSelectCategory(context, ref, categoryData);
       },
       splashColor: Theme.of(context).primaryColor,
       borderRadius: BorderRadius.circular(8),
