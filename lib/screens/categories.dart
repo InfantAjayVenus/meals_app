@@ -15,9 +15,7 @@ class CategoriesScreen extends StatelessWidget {
     Key? key,
     required this.filterSettings,
     required this.updateFilterSettings,
-    required this.toggleFavourite,
   }) : super(key: key);
-  final Function toggleFavourite;
   final Map<FilterOptions, bool> filterSettings;
   final Function updateFilterSettings;
 
@@ -64,7 +62,6 @@ class CategoriesScreen extends StatelessWidget {
           return MealsScreen(
             mealsList,
             selectedCategory.title,
-            toggleFavourite: toggleFavourite,
           );
         },
       ),

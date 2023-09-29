@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals_app/enum/filter_options.dart';
 import 'package:meals_app/models/meal.dart';
+import 'package:meals_app/providers/favourite_meals_provider.dart';
 import 'package:meals_app/providers/meals_provider.dart';
 import 'package:meals_app/screens/categories.dart';
 import 'package:meals_app/screens/meals.dart';
@@ -15,7 +16,6 @@ class AppScreen extends ConsumerStatefulWidget {
 }
 
 class _AppScreenState extends ConsumerState<AppScreen> {
-  final List<String> favouriteMealIds = [];
   int _activePageIndex = 0;
   Map<FilterOptions, bool> filterSettings = {
     FilterOptions.glutenFree: false,
@@ -30,36 +30,15 @@ class _AppScreenState extends ConsumerState<AppScreen> {
     });
   }
 
-  _showToastMessage(String message) {
-    ScaffoldMessenger.of(context).removeCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
-  }
-
-  _toggleFavourite(String mealId) {
-    setState(() {
-      if (favouriteMealIds.contains(mealId)) {
-        favouriteMealIds.remove(mealId);
-        _showToastMessage('Meal removed from favourites');
-      } else {
-        favouriteMealIds.add(mealId);
-        _showToastMessage('Meal added to favourites');
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     Widget content = CategoriesScreen(
       filterSettings: filterSettings,
       updateFilterSettings: _updateFilterSettings,
-      toggleFavourite: _toggleFavourite,
     );
     if (_activePageIndex == 1) {
       final availableMeals = ref.watch(mealsProvider);
+      final favouriteMealIds = ref.watch(favouriteMealsProvider);
       List<Meal> favouriteMeals = availableMeals
           .where(
             (element) => favouriteMealIds.contains(element.id),
@@ -68,7 +47,6 @@ class _AppScreenState extends ConsumerState<AppScreen> {
       content = MealsScreen(
         favouriteMeals,
         'Favourites',
-        toggleFavourite: _toggleFavourite,
       );
     }
     return Scaffold(
